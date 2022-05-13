@@ -1,0 +1,183 @@
+{% load static %}
+<script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+<link rel="stylesheet" href="{% static 'irma/irma.css' %}" type="text/css">
+
+{% block javascript %}
+<script>  
+    var timeoutInterval = 2000;
+    var qrcontent = "";
+
+    function launchIRMAapp() {
+      var open = window.open("irma://qr/json/"+qrcontent);
+      if (open == null || typeof(open)=='undefined') {
+        loadAnimation('POPUP');
+        }  
+    }
+
+    function showQRcode() {
+            loadAnimation('EMPTY');
+            var qrcode = new QRCode(document.getElementById("modal-content"), {
+              text: qrcontent,
+              width: 255,
+              height: 255,
+              colorDark : "#000000",
+              colorLight : "#ffffff",
+              correctLevel : QRCode.CorrectLevel.H
+            });
+    }
+    
+    function loadAnimation(type) {
+      switch(type) {
+        case 'CANCELLED':
+              document.getElementById("modal-content").innerHTML = "<div class=\"irma-web-forbidden-animation\"</div><p class=\"irma-web-animation-text\">Cancelled</p>";
+              break; 
+        case 'DJANGO_OFF_LINE':
+              document.getElementById("modal-content").innerHTML = "<div class=\"irma-web-forbidden-animation\"</div><p class=\"irma-web-animation-text\">The Django server is unavailable.<br>Please try again later.</p>";
+              break;   
+        case 'EMPTY':
+              document.getElementById("modal-content").innerHTML = "";
+              break;
+        case 'FOLLOW':
+              document.getElementById("modal-content").innerHTML = "<div class=\"irma-web-waiting-for-user-animation\"></div><p>Follow the instructions in the IRMA app</p>";
+              break;   
+        case 'FORBIDDEN':
+              document.getElementById("modal-content").innerHTML = "<div class=\"irma-web-forbidden-animation\"</div><p class=\"irma-web-animation-text\">Forbidden</p>";
+              break;
+        case 'IRMA_OFF_LINE':
+              document.getElementById("modal-content").innerHTML = "<div class=\"irma-web-forbidden-animation\"</div><p class=\"irma-web-animation-text\">The IRMA server is unavailable.<br>Please try again later.</p>";
+              break;   
+        case 'LOADING':
+              document.getElementById("modal-content").innerHTML = "<div class=\"irma-web-loading-animation\"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><p>\nOne moment please.</p>"
+              break;
+        case 'MOBILE':
+              document.getElementById("modal-content").innerHTML = "<button class=\"irma-web-button\" onclick=\"launchIRMAapp()\">Open IRMA-app</button><a class=\"irma-popop-text\"  onclick=\"showQRcode()\">Show QR code</a>"; 
+              break;    
+        case 'POPUP':
+              document.getElementById("modal-content").innerHTML = "<p>Turn off your pop-up blocker!\n\nWe try to open the following url:\n"+url+"</p>";
+              break;  
+        case 'COOKIE_BLOCKED':
+              document.getElementById("modal-content").innerHTML = "<div class=\"irma-web-forbidden-animation\"</div><p class=\"irma-web-animation-text\">Error:<br>blocked cookie</p>";
+              break;  
+        case 'SUCCEEDED':
+              document.getElementById("modal-content").innerHTML = "<div class=\"irma-web-checkmark-animation\"></div><p>Success!</p>";
+              break;
+        case 'TIMEOUT':
+              document.getElementById("modal-content").innerHTML = "<div class=\"irma-web-clock-animation\"></div><p>We did not receive the attributes.</p>";
+              break;  
+        case 'UNSPECIFIED':
+              document.getElementById("modal-content").innerHTML = "<div class=\"irma-web-forbidden-animation\"</div><p class=\"irma-web-animation-text\">Unspecified error</p>";
+              break;        
+      } 
+    }
+
+    function start_irma_session(sessionType, urlNextPage, attributes, authorisationValue) {
+      loadAnimation('LOADING');
+      $.ajax(     {
+        url: '/irma/start_irma_session/',
+        data: {
+          'attributes' : attributes,
+          'sessionType' : sessionType,
+          'urlNextPage' : urlNextPage,
+          'authorisationValue' : authorisationValue
+          
+        },
+        dataType: 'json',
+        success: function (data) {
+                 qrcontent = data.qrcontent;
+                 switch(data.qrcontent) {
+                     case 'skip':
+                          loadAnimation('SUCCEEDED');
+                          setTimeout(getSessionResult, timeoutInterval);
+                          break;
+                     case 'Session error':
+                          loadAnimation('UNSPECIFIED');
+                          break;
+                     case 'IRMA_server_unreachable':
+                          loadAnimation('IRMA_OFF_LINE');
+                          break;
+                     default:
+                          if (data.device_type == 'pc'){
+                            showQRcode();
+                          }
+                          else {
+                            loadAnimation('MOBILE');
+                          }
+                          setTimeout(getSessionStatus, timeoutInterval);
+  	              }
+        },
+        error: function(data){
+          loadAnimation('DJANGO_OFF_LINE');
+          }
+      });
+
+    }
+
+    function getSessionStatus() {
+      // Check if modal is still open otherwise the process will continue forever
+      if (document.getElementById("IRMAmodal").style.display == 'block') {
+        $.ajax({
+          url: '/irma/get_irma_session_status/',
+          data: {
+          },
+          dataType: 'json',
+          success: function (data) {
+                switch(data.status) {
+                      case 'INITIALIZED':
+                        setTimeout(getSessionStatus, timeoutInterval);
+                        break;
+                      case 'CONNECTED':
+                        loadAnimation('FOLLOW');
+                        setTimeout(getSessionStatus, timeoutInterval);
+                        break;
+                      case 'DONE':
+                        loadAnimation('SUCCEEDED');
+                        setTimeout(getSessionResult, timeoutInterval);
+                        break;
+                      case 'TIMEOUT':
+                        loadAnimation('TIMEOUT');
+                        break;
+                      case 'CANCELLED':
+                        loadAnimation('CANCELLED');
+                        break;
+                      case 'COOKIE_BLOCKED':
+                        loadAnimation('COOKIE_BLOCKED');
+                        break;
+                      case 'IRMA_OFF_LINE':
+                        loadAnimation('IRMA_OFF_LINE');
+                        break;
+                      default:
+                        loadAnimation('UNSPECIFIED');
+                }
+          },
+          error: function(data){
+              loadAnimation('UNSPECIFIED');
+          }
+        });
+      }
+    }
+
+    function getSessionResult() {
+        // Location Replace initiates a HTTP request to the Django server
+        location.replace('/irma/perform_irma_session/');      
+    }
+
+</script>
+{% endblock %}
+<!-- Modal -->
+<div class="modal fade" id="IRMAmodal" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header ">
+        <button type="button" class="modal-close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <p>Ga verder met <img src="{% static 'irma/irma_logo.png' %}"></p>        
+      </div>          
+      <div class="modal-content-content">
+        <div class="modal-content-centered">
+            <p id="modal-content"> </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</head>
+<body>

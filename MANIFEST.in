@@ -1,0 +1,6 @@
+include LICENSE
+include README.rst
+recursive-include irma/static *
+recursive-include irma/templates *
+recursive-include irma/tests *
+recursive-include docs * 

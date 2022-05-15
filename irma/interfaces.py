@@ -187,10 +187,14 @@ class IrmaSessionManager:
             if session_type == 'IRMA_encrypted_authenticate':
                 usernamestr = IrmaSessionManager.create_pseudonym_username_string(usernamestr)
             user = authenticate(request, username=usernamestr)
-            if user is not None:
-                login(request, user)
-                request.session['activity_result'] = "SUCCESS"
-                # first_name = user.first_name   
+            if 'irma.irma_auth_backend.IrmaAuthenticationBackend' in settings.AUTHENTICATION_BACKENDS:
+                user = authenticate(request, username=usernamestr)
+                if user is not None:
+                    login(request, user)
+                    request.session['activity_result'] = "SUCCESS"
+            else:
+                raise Exception('\'Settings\' object has no IRMA authentication backend reference')
+
         #Authentication failure
         except Exception as e:
             print('IRMA_authenticate session failed. ' + 'Exception ' + str(e))
@@ -319,7 +323,7 @@ class IrmaSessionManager:
     #This makes the UserId unrelatable to other websites
     def create_pseudonym_username_string(usernamestr):
         hash = hashlib.new('sha256')
-        hash.update(str(settings.IRMA_NONCE).encode("utf-8"))
+        hash.update(str(settings.SECRET_KEY).encode("utf-8"))
         hash.update(usernamestr.encode("utf-8"))
         return hash.hexdigest()
 

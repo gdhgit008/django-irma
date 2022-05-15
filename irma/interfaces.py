@@ -187,7 +187,7 @@ class IrmaSessionManager:
             if session_type == 'IRMA_encrypted_authenticate':
                 usernamestr = IrmaSessionManager.create_pseudonym_username_string(usernamestr)
             user = authenticate(request, username=usernamestr)
-            if 'irmadjangoapi.irma_auth_backend.IrmaAuthenticationBackend' in settings.AUTHENTICATION_BACKENDS:
+            if 'irma.irma_auth_backend.IrmaAuthenticationBackend' in settings.AUTHENTICATION_BACKENDS:
                 user = authenticate(request, username=usernamestr)
                 if user is not None:
                     login(request, user)

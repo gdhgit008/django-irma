@@ -323,7 +323,7 @@ class IrmaSessionManager:
     #This makes the UserId unrelatable to other websites
     def create_pseudonym_username_string(usernamestr):
         hash = hashlib.new('sha256')
-        hash.update(str(settings.IRMA_NONCE).encode("utf-8"))
+        hash.update(str(settings.SECRET_KEY).encode("utf-8"))
         hash.update(usernamestr.encode("utf-8"))
         return hash.hexdigest()
 

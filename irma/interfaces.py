@@ -73,22 +73,25 @@ class IrmaSessionManager:
     def get_qrcontent_for_modal(request):
         qrcontent = 'IRMA session error'
         if IrmaSessionManager.session_type_without_qr(request):
-            qrcontent = "skip"
+             qrcontent = "skip"
         else:
-            attributes=request.GET.get('attributes')
-            response = IrmaSessionManager.get_response_from_irma_disclosure_post_request(request, attributes)
-            if IrmaSessionManager.session_request_succeeded(response):
-                uri = response[0]['sessionPtr']['u']
-                sessionID = uri[uri.rfind('/')+1:len(uri)]
-                token = response[0]['token']
-                IrmaDjangoSessionManager.store_irma_server_response_in_session(request,sessionID, token)
-                # This string is transformed into QRcode in Modal.html
-                qrcontent = "{\"u\":\""+uri+"\",\"irmaqr\":\"disclosing\"}"
-            else:
-                if not IrmaSessionManager.session_request_failed_IRMA_server_unreachable(response):
-                    raise Exception('Request to the IRMA server was invalid, please check the start_irma_session arguments for any syntax errors')
+            if IrmaSessionManager.session_type_valid(request):
+                attributes=request.GET.get('attributes')
+                response = IrmaSessionManager.get_response_from_irma_disclosure_post_request(request, attributes)
+                if IrmaSessionManager.session_request_succeeded(response):
+                    uri = response[0]['sessionPtr']['u']
+                    sessionID = uri[uri.rfind('/')+1:len(uri)]
+                    token = response[0]['token']
+                    IrmaDjangoSessionManager.store_irma_server_response_in_session(request,sessionID, token)
+                    # This string is transformed into QRcode in Modal.html
+                    qrcontent = "{\"u\":\""+uri+"\",\"irmaqr\":\"disclosing\"}"
                 else:
-                    qrcontent = "IRMA_server_unreachable"
+                    if IrmaSessionManager.session_request_failed_IRMA_server_unreachable(response):
+                        qrcontent = "IRMA_server_unreachable"
+                    else:
+                        raise Exception('Request to the IRMA server was invalid, please check the start_irma_session arguments for any syntax errors')
+            else:
+                 raise Exception('Not a valid IRMA Django activity')
         return qrcontent
 
     def session_type_without_qr(request):
@@ -96,6 +99,19 @@ class IrmaSessionManager:
                 request.session['session_type'] == 'IRMA_clear_authorisations' or 
                 request.session['session_type'] == 'IRMA_unregister' or 
                 request.session['session_type'] == 'IRMA_clear_disclose')
+
+    def session_type_valid(request):
+        return (request.session['session_type'] == 'IRMA_unauthenticate' or 
+                request.session['session_type'] == 'IRMA_clear_authorisations' or 
+                request.session['session_type'] == 'IRMA_unregister' or 
+                request.session['session_type'] == 'IRMA_clear_disclose' or
+                request.session['session_type'] == 'IRMA_authenticate' or
+                request.session['session_type'] == 'IRMA_encrypted_authenticate' or
+                request.session['session_type'] == 'IRMA_register' or
+                request.session['session_type'] == 'IRMA_encrypted_register' or
+                request.session['session_type'] == 'IRMA_authorise' or
+                request.session['session_type'] == 'IRMA_disclose' 
+				)
 
     def get_response_from_irma_disclosure_post_request(request, attributes):
         if 'test_json_response' in request.session:

@@ -101,17 +101,28 @@ class IrmaSessionManager:
                 request.session['session_type'] == 'IRMA_clear_disclose')
 
     def session_type_valid(request):
-        return (request.session['session_type'] == 'IRMA_unauthenticate' or 
-                request.session['session_type'] == 'IRMA_clear_authorisations' or 
-                request.session['session_type'] == 'IRMA_unregister' or 
-                request.session['session_type'] == 'IRMA_clear_disclose' or
-                request.session['session_type'] == 'IRMA_authenticate' or
-                request.session['session_type'] == 'IRMA_encrypted_authenticate' or
-                request.session['session_type'] == 'IRMA_register' or
-                request.session['session_type'] == 'IRMA_encrypted_register' or
-                request.session['session_type'] == 'IRMA_authorise' or
-                request.session['session_type'] == 'IRMA_disclose' 
-				)
+        result = False
+        if request.session['session_type'] == 'IRMA_unauthenticate' and request.session['url_next_page'] is not None:
+           result = True
+        if request.session['session_type'] == 'IRMA_clear_authorisations' and request.session['url_next_page'] is not None:
+           result = True
+        if request.session['session_type'] == 'IRMA_unregister' and request.session['url_next_page'] is not None:
+           result = True
+        if request.session['session_type'] == 'IRMA_clear_disclose' and request.session['url_next_page'] is not None:
+           result = True
+        if request.session['session_type'] == 'IRMA_authenticate' and request.session['url_next_page'] is not None and request.session['attributes'] is not None:
+           result = True
+        if request.session['session_type'] == 'IRMA_encrypted_authenticate' and request.session['url_next_page'] is not None and request.session['attributes'] is not None:
+           result = True
+        if request.session['session_type'] == 'IRMA_register' and request.session['url_next_page'] is not None and request.session['attributes'] is not None:
+           result = True
+        if request.session['session_type'] == 'IRMA_encrypted_register' and request.session['url_next_page'] is not None and request.session['attributes'] is not None:
+           result = True
+        if request.session['session_type'] == 'IRMA_disclose' and request.session['url_next_page'] is not None and request.session['attributes'] is not None:
+           result = True
+        if request.session['session_type'] == 'IRMA_authorise' and request.session['url_next_page'] is not None and request.session['attributes'] is not None and request.session['authorisation_value']:
+           result = True
+        return result
 
     def get_response_from_irma_disclosure_post_request(request, attributes):
         if 'test_json_response' in request.session:

@@ -13,8 +13,6 @@ class AuthorisationTestClass(TestCase):
     # First access is denied
     # Second access is granted
     def test_authorisation(self):
-        response = self.client.get('/eighteenplus')
-        self.assertEqual(response.status_code, 301)
 
         response = self.client.get('/irma/start_irma_session/', 
         { 'attributes' : 'pbdf.gemeente.personalData.over18',
@@ -30,5 +28,3 @@ class AuthorisationTestClass(TestCase):
         self.assertIn(
             ('activity_result', 'SUCCESS'), 
             response.client.session.items())
-
-        self.assertRedirects(response, '/eighteenplus/')

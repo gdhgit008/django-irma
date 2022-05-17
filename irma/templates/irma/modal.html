@@ -67,6 +67,9 @@
         case 'SUCCEEDED':
               document.getElementById("modal-content").innerHTML = "<div class=\"irma-web-checkmark-animation\"></div><p>Success!</p>";
               break;
+        case 'SYNTAX_ERROR':
+              document.getElementById("modal-content").innerHTML = "<div class=\"irma-web-forbidden-animation\"</div><p class=\"irma-web-animation-text\">Syntax error</p>";
+              break; 
         case 'TIMEOUT':
               document.getElementById("modal-content").innerHTML = "<div class=\"irma-web-clock-animation\"></div><p>We did not receive the attributes.</p>";
               break;  
@@ -100,6 +103,9 @@
                           break;
                      case 'IRMA_server_unreachable':
                           loadAnimation('IRMA_OFF_LINE');
+                          break;
+                     case 'Syntax_error':
+                          loadAnimation('SYNTAX_ERROR');
                           break;
                      default:
                           if (data.device_type == 'pc'){

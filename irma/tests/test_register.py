@@ -104,6 +104,9 @@ class RegistrationTestClass(TestCase):
         self.assertIn(
             ('lastname', ''), 
             response.client.session.items())
+        self.assertIn(
+            ('url_next_page', 'regisration_done'),
+            response.client.session.items())
         self.assertRedirects(response, '/registration_done/')
 
     # Test with encrypted registration session with three attributes. 

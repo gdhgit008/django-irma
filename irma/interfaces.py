@@ -71,7 +71,7 @@ class IrmaSessionManager:
             IrmaSessionManager.clear_disclosed_attributes_irma_user(request)
 
     def get_qrcontent_for_modal(request):
-        qrcontent = 'IRMA session error'
+        qrcontent = 'IRMA_session_error'
         if IrmaSessionManager.session_type_without_qr(request):
             qrcontent = "skip"
         else:

@@ -13,7 +13,7 @@ class DisclosureTestClass(TestCase):
         response = self.client.get('/irma/start_irma_session/', 
         { 'attributes' : 'pbdf.sidn-pbdf.mobilenumber.mobilenumber',
         'sessionType' : 'IRMA_disclose',
-        'urlNextPage' : 'disclosure_start',
+        'urlNextPage' : '/irma/test_succeeded_page/',
         'authorisationValue' : '',
         'test_json_response' : "{\"sessionPtr\": {\"u\": \"https://www.someserver.com:8088/irma/session/P3bT1o0ielaUBBzV9YzG\", \"irmaqr\": \"disclosing\"}, \"token\": \"woWEqPedWQ26L2MIEbpF\", \"frontendRequest\": {\"authorization\": \"PR9lWytQwDZWCqNedu40\", \"minProtocolVersion\": \"1.0\", \"maxProtocolVersion\": \"1.1\"}}"
 
@@ -29,14 +29,14 @@ class DisclosureTestClass(TestCase):
             ('disclosed_attributes', {'pbdf.sidn-pbdf.mobilenumber.mobilenumber': '+31612345678'}), 
             response.client.session.items())
         
-        self.assertRedirects(response, '/disclosure_start/')
+        self.assertRedirects(response, '/irma/test_succeeded_page/')
 
         # Disclose additional attributes
 
         response = self.client.get('/irma/start_irma_session/', 
         { 'attributes' : 'pbdf.gemeente.personalData.fullname&pbdf.gemeente.address.street&pbdf.gemeente.address.houseNumber&pbdf.gemeente.address.zipcode&pbdf.gemeente.address.city',
         'sessionType' : 'IRMA_disclose',
-        'urlNextPage' : 'disclosure_start',
+        'urlNextPage' : '/irma/test_succeeded_page/',
         'authorisationValue' : '',
         'test_json_response' : "{\"sessionPtr\": {\"u\": \"https://www.someserver.com:8088/irma/session/UOuM2YIQP7tKIDejkueG\", \"irmaqr\": \"disclosing\"}, \"token\": \"S6TVlaWgqmiUl8Jyzje5\", \"frontendRequest\": {\"authorization\": \"bW3sXgUJFDR9CWzBlVCo\", \"minProtocolVersion\": \"1.0\", \"maxProtocolVersion\": \"1.1\"}}"
 
@@ -52,14 +52,14 @@ class DisclosureTestClass(TestCase):
             ('disclosed_attributes', {'pbdf.sidn-pbdf.mobilenumber.mobilenumber': '+31612345678', 'pbdf.gemeente.personalData.fullname': 'A.B.C. Jansen', 'pbdf.gemeente.address.street': 'Straatnaam', 'pbdf.gemeente.address.houseNumber': '8', 'pbdf.gemeente.address.zipcode': '1234 AB', 'pbdf.gemeente.address.city': 'Plaatsnaam'}), 
             response.client.session.items())
 
-        self.assertRedirects(response, '/disclosure_start/')
+        self.assertRedirects(response, '/irma/test_succeeded_page/')
         
         # Undisclose attributes
 
         response = self.client.get('/irma/start_irma_session/', 
         { 'attributes' : '',
         'sessionType' : 'IRMA_clear_disclose',
-        'urlNextPage' : 'display_disclosed',
+        'urlNextPage' : '/irma/test_succeeded_page/',
         'authorisationValue' : ''
         })
         response = self.client.get('/irma/perform_irma_session/') 
@@ -71,14 +71,14 @@ class DisclosureTestClass(TestCase):
         self.assertIn(
             ('disclosed_attributes', {}), 
             response.client.session.items())
-        self.assertRedirects(response, '/display_disclosed/')
+        self.assertRedirects(response, '/irma/test_succeeded_page/')
 
 
     def test_disclosure_session_no_IRMA_response_1(self):
         response = self.client.get('/irma/start_irma_session/', 
         { 'attributes' : 'pbdf.sidn-pbdf.mobilenumber.mobilenumber',
         'sessionType' : 'IRMA_disclose',
-        'urlNextPage' : 'disclosure_start',
+        'urlNextPage' : '/irma/test_succeeded_page/',
         'authorisationValue' : '',
         'test_irma_server' : 'https://someserver.com'
 
@@ -90,7 +90,7 @@ class DisclosureTestClass(TestCase):
         response = self.client.get('/irma/start_irma_session/', 
         { 'attributes' : 'pbdf.sidn-pbdf.mobilenumber.mobilenumber',
         'sessionType' : 'IRMA_disclose',
-        'urlNextPage' : 'disclosure_start',
+        'urlNextPage' : '/irma/test_succeeded_page/',
         'authorisationValue' : ''
 
         })
@@ -108,7 +108,7 @@ class DisclosureTestClass(TestCase):
         response = self.client.get('/irma/start_irma_session/', 
         { 'attributes' : 'pbdf.sidn-pbdf.mobilenumber.mobilenumber',
         'sessionType' : 'IRMA_disclose',
-        'urlNextPage' : 'disclosure_start',
+        'urlNextPage' : '/irma/test_succeeded_page/',
         'authorisationValue' : '',
         'test_json_response' : "{\"sessionPtr\": {\"u\": \"https://www.someserver.com:8088/irma/session/P3bT1o0ielaUBBzV9YzG\", \"irmaqr\": \"disclosing\"}, \"token\": \"woWEqPedWQ26L2MIEbpF\", \"frontendRequest\": {\"authorization\": \"PR9lWytQwDZWCqNedu40\", \"minProtocolVersion\": \"1.0\", \"maxProtocolVersion\": \"1.1\"}}"
 

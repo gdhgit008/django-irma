@@ -3,6 +3,7 @@ from django.shortcuts import redirect
 from django.http import JsonResponse
 from irma.services import IrmaDjangoSessionManager
 from irma.interfaces import IrmaSessionManager
+from irma.decorators import irma_authorisation_required
 
 # This class is the access point of the IRMA Django API.
 # The public functions available for Django Developers are in this class.
@@ -69,3 +70,12 @@ class IrmaApi:
         if request.user_agent.is_mobile:
             device_type = 'mobile'
         return device_type
+
+    # Required for test purposes
+    def test_succeeded_page(request):
+        return JsonResponse({'Test': 'Succeeded'})
+
+    # Required for test purposes
+    @irma_authorisation_required('pbdf.gemeente.personalData.over18','','')
+    def test_authorisation_page(request):
+        return JsonResponse({'Authorisation': 'Succeeded'})

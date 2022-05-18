@@ -53,7 +53,7 @@ Quick start
 
     {% include "irma/modal.html" %}
 
-8. Run the django-irma tests to see if everythin is installed corectly::
+8. Run the tests to check the pacakge is installed corectly::
 
     python3 manage.py test irma
 

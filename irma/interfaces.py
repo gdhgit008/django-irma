@@ -73,7 +73,7 @@ class IrmaSessionManager:
     def get_qrcontent_for_modal(request):
         qrcontent = 'IRMA session error'
         if IrmaSessionManager.session_type_without_qr(request):
-             qrcontent = "skip"
+            qrcontent = "skip"
         else:
             if IrmaSessionManager.session_type_valid(request):
                 attributes=request.GET.get('attributes')

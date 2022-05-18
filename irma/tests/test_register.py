@@ -16,7 +16,7 @@ class RegistrationTestClass(TestCase):
         response = self.client.get('/irma/start_irma_session/', 
         { 'attributes' : 'pbdf.sidn-pbdf.irma.pseudonym',
         'sessionType' : 'IRMA_register',
-        'urlNextPage' : 'registration_done',
+        'urlNextPage' : '/irma/test_succeeded_page/',
         'authorisationValue' : ''
         })
         self.assertEqual(response.status_code, 200)
@@ -41,7 +41,7 @@ class RegistrationTestClass(TestCase):
         self.assertIn(
             ('lastname', ''), 
             response.client.session.items())
-        self.assertRedirects(response, '/registration_done/')
+        self.assertRedirects(response, '/irma/test_succeeded_page/')
 
     # Test with normal registration session with three attributes. 
     # Successfull normal registration with fullname
@@ -50,7 +50,7 @@ class RegistrationTestClass(TestCase):
         response = self.client.get('/irma/start_irma_session/', 
         { 'attributes' : 'pbdf.sidn-pbdf.irma.pseudonym&pbdf.gemeente.personalData.initials&pbdf.gemeente.personalData.surname',
         'sessionType' : 'IRMA_register',
-        'urlNextPage' : 'registration_done',
+        'urlNextPage' : '/irma/test_succeeded_page/',
         'authorisationValue' : '',
         'test_json_response' : "{\"sessionPtr\": {\"u\": \"https://www.someserver.com:8088/irma/session/WLo2AWzEyKiyVYeydk92\", \"irmaqr\": \"disclosing\"}, \"token\": \"lqcUyCLQVXLre5fXrdfj\", \"frontendRequest\": {\"authorization\": \"9BbXyq9SLQhCknB9WlBV\", \"minProtocolVersion\": \"1.0\", \"maxProtocolVersion\": \"1.1\"}}"
         })
@@ -71,7 +71,7 @@ class RegistrationTestClass(TestCase):
         self.assertIn(
             ('lastname', 'Jansen'), 
             response.client.session.items())
-        self.assertRedirects(response, '/registration_done/')
+        self.assertRedirects(response, '/irma/test_succeeded_page/')
 
     # Test with registration session with three attributes. 
     # Successfull encrypted registration with fullname
@@ -79,7 +79,7 @@ class RegistrationTestClass(TestCase):
         response = self.client.get('/irma/start_irma_session/', 
         { 'attributes' : 'pbdf.sidn-pbdf.irma.pseudonym',
         'sessionType' : 'IRMA_encrypted_register',
-        'urlNextPage' : 'registration_done',
+        'urlNextPage' : '/irma/test_succeeded_page/',
         'authorisationValue' : ''
         })
         self.assertEqual(response.status_code, 200)
@@ -95,8 +95,8 @@ class RegistrationTestClass(TestCase):
         self.assertIn(
             ('activity_result', 'SUCCESS'), 
             response.client.session.items())
-        self.assertIn(
-            ('username', '161e8848242a68b724349af267328988dafcfaea3f652c79d43609c5f93598b1'), 
+        self.assertNotIn(
+            ('username', 'B9GUh0A5I4s'), 
             response.client.session.items())
         self.assertIn(
             ('firstname', ''), 
@@ -104,7 +104,7 @@ class RegistrationTestClass(TestCase):
         self.assertIn(
             ('lastname', ''), 
             response.client.session.items())
-        self.assertRedirects(response, '/registration_done/')
+        self.assertRedirects(response, '/irma/test_succeeded_page/')
 
     # Test with encrypted registration session with three attributes. 
     # Successfull encrypted registration with fullname
@@ -113,7 +113,7 @@ class RegistrationTestClass(TestCase):
         response = self.client.get('/irma/start_irma_session/', 
         { 'attributes' : 'pbdf.sidn-pbdf.irma.pseudonym&pbdf.gemeente.personalData.initials&pbdf.gemeente.personalData.surname',
         'sessionType' : 'IRMA_encrypted_register',
-        'urlNextPage' : 'registration_done',
+        'urlNextPage' : '/irma/test_succeeded_page/',
         'authorisationValue' : '',
         'test_json_response' : "{\"sessionPtr\": {\"u\": \"https://www.someserver.com:8088/irma/session/WLo2AWzEyKiyVYeydk92\", \"irmaqr\": \"disclosing\"}, \"token\": \"lqcUyCLQVXLre5fXrdfj\", \"frontendRequest\": {\"authorization\": \"9BbXyq9SLQhCknB9WlBV\", \"minProtocolVersion\": \"1.0\", \"maxProtocolVersion\": \"1.1\"}}"
         })
@@ -125,8 +125,8 @@ class RegistrationTestClass(TestCase):
         self.assertIn(
             ('activity_result', 'SUCCESS'), 
             response.client.session.items())
-        self.assertIn(
-            ('username', '161e8848242a68b724349af267328988dafcfaea3f652c79d43609c5f93598b1'), 
+        self.assertNotIn(
+            ('username', 'B9GUh0A5I4s'), 
             response.client.session.items())
         self.assertIn(
             ('firstname', 'A.B.C.'), 
@@ -134,31 +134,31 @@ class RegistrationTestClass(TestCase):
         self.assertIn(
             ('lastname', 'Jansen'), 
             response.client.session.items())
-        self.assertRedirects(response, '/registration_done/')
+        self.assertRedirects(response, '/irma/test_succeeded_page/')
 
     # Test with normal registration session with one non-existing attribute.
     # HTTP request (code 200) and if the IRMA server status is "INITIALIZED" 
     # Unsuccessfull normal anonymous registration
     def test_normal_register_pseudonym_anonymous_incorrect(self):
-        try:
-            response = self.client.get('/irma/start_irma_session/', 
+        response = self.client.get('/irma/start_irma_session/', 
             { 'attributes' : 'pbdf.sidn-pbdf.irma.pseudo',
             'sessionType' : 'IRMA_register',
-            'urlNextPage' : 'registration_done',
+            'urlNextPage' : '/irma/test_succeeded_page/',
             'authorisationValue' : ''
             })
-        except:
-            pass
-
+        self.assertEqual(
+            response.json()['qrcontent'],
+            'Syntax_error')
     # Test with normal registration session with one existing and one non-existing attribute.
     # Unsuccessfull normal anonymous registration
     def test_normal_register_pseudonym_anonymous_incorrect_two(self):
-        try:
-            response = self.client.get('/irma/start_irma_session/', 
-            { 'attributes' : 'pbdf.sidn-pbdf.irma.pseudonym&',
-            'sessionType' : 'IRMA_register',
-            'urlNextPage' : 'registration_done',
-            'authorisationValue' : ''
-            })
-        except:
-            pass
+        response = self.client.get('/irma/start_irma_session/', 
+             { 'attributes' : 'pbdf.sidn-pbdf.irma.pseudonym&',
+               'sessionType' : 'IRMA_register',
+               'urlNextPage' : '/irma/test_succeeded_page/',
+               'authorisationValue' : ''
+             })
+        self.assertEqual(
+            response.json()['qrcontent'],
+            'Syntax_error')
+

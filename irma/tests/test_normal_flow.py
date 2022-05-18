@@ -15,7 +15,7 @@ class NormalFlowTestClass(TestCase):
         response = self.client.get('/irma/start_irma_session/', 
         { 'attributes' : 'pbdf.sidn-pbdf.irma.pseudonym',
         'sessionType' : 'IRMA_register',
-        'urlNextPage' : 'registration_done',
+        'urlNextPage' : '/irma/test_succeeded_page/',
         'authorisationValue' : '',
         'test_json_response' : "{\"sessionPtr\": {\"u\": \"https://www.someserver.com:8088/irma/session/1ofWzImXxNru7chdLzoS\", \"irmaqr\": \"disclosing\"}, \"token\": \"CGXgTgMamPKPnwwT8Ln7\", \"frontendRequest\": {\"authorization\": \"fDUH7ZdmY9OHaleopxFu\", \"minProtocolVersion\": \"1.0\", \"maxProtocolVersion\": \"1.1\"}}"
         })
@@ -36,13 +36,13 @@ class NormalFlowTestClass(TestCase):
             ('lastname', ''), 
             response.client.session.items())
 
-        self.assertRedirects(response, '/registration_done/')
+        self.assertRedirects(response, '/irma/test_succeeded_page/')
 
         # Authenticate
         response = self.client.get('/irma/start_irma_session/', 
         { 'attributes' : 'pbdf.sidn-pbdf.irma.pseudonym',
         'sessionType' : 'IRMA_authenticate',
-        'urlNextPage' : 'authentication_done',
+        'urlNextPage' : '/irma/test_succeeded_page/',
         'authorisationValue' : '',
         'test_json_response' : "{\"sessionPtr\": {\"u\": \"https://www.someserver.com:8088/irma/session/ZH1FVAZ9WyO2UOjXQ7iP\", \"irmaqr\": \"disclosing\"}, \"token\": \"FPuA7Au5Zd9N4e1Mx5KB\", \"frontendRequest\": {\"authorization\": \"FyNCUfa40roIjB2Sq5bc\", \"minProtocolVersion\": \"1.0\", \"maxProtocolVersion\": \"1.1\"}}"
         })
@@ -54,13 +54,13 @@ class NormalFlowTestClass(TestCase):
             ('activity_result', 'SUCCESS'), 
             response.client.session.items())
 
-        self.assertRedirects(response, '/authentication_done/')
+        self.assertRedirects(response, '/irma/test_succeeded_page/')
 
     def test_register_and_authenticate_encrypted_pseudonym_and_name(self):
         response = self.client.get('/irma/start_irma_session/', 
         { 'attributes' : 'pbdf.sidn-pbdf.irma.pseudonym&pbdf.gemeente.personalData.initials&pbdf.gemeente.personalData.surname',
         'sessionType' : 'IRMA_encrypted_register',
-        'urlNextPage' : 'registration_done',
+        'urlNextPage' : '/irma/test_succeeded_page/',
         'authorisationValue' : '',
         'test_json_response' : "{\"sessionPtr\": {\"u\": \"https://www.someserver.com:8088/irma/session/WLo2AWzEyKiyVYeydk92\", \"irmaqr\": \"disclosing\"}, \"token\": \"lqcUyCLQVXLre5fXrdfj\", \"frontendRequest\": {\"authorization\": \"9BbXyq9SLQhCknB9WlBV\", \"minProtocolVersion\": \"1.0\", \"maxProtocolVersion\": \"1.1\"}}"
         })
@@ -71,14 +71,14 @@ class NormalFlowTestClass(TestCase):
         self.assertIn(
             ('activity_result', 'SUCCESS'), 
             response.client.session.items())
-        self.assertRedirects(response, '/registration_done/')
+        self.assertRedirects(response, '/irma/test_succeeded_page/')
 
         # Authenticate
 
         response = self.client.get('/irma/start_irma_session/', 
         { 'attributes' : 'pbdf.sidn-pbdf.irma.pseudonym',
         'sessionType' : 'IRMA_encrypted_authenticate',
-        'urlNextPage' : 'authentication_done',
+        'urlNextPage' : '/irma/test_succeeded_page/',
         'authorisationValue' : '',
         'test_json_response' : "{\"sessionPtr\": {\"u\": \"https://www.someserver.com:8088/irma/session/ZH1FVAZ9WyO2UOjXQ7iP\", \"irmaqr\": \"disclosing\"}, \"token\": \"FPuA7Au5Zd9N4e1Mx5KB\", \"frontendRequest\": {\"authorization\": \"FyNCUfa40roIjB2Sq5bc\", \"minProtocolVersion\": \"1.0\", \"maxProtocolVersion\": \"1.1\"}}"
         })
@@ -89,8 +89,8 @@ class NormalFlowTestClass(TestCase):
         self.assertIn(
             ('activity_result', 'SUCCESS'), 
             response.client.session.items())
-        self.assertIn(
-            ('username', '161e8848242a68b724349af267328988dafcfaea3f652c79d43609c5f93598b1'), 
+        self.assertNotIn(
+            ('username', 'B9GUh0A5I4s'), 
             response.client.session.items())
         self.assertIn(
             ('firstname', 'A.B.C.'), 
@@ -99,14 +99,14 @@ class NormalFlowTestClass(TestCase):
             ('lastname', 'Jansen'), 
             response.client.session.items())
 
-        self.assertRedirects(response, '/authentication_done/')
+        self.assertRedirects(response, '/irma/test_succeeded_page/')
 
         # Logout
 
         response = self.client.get('/irma/start_irma_session/', 
         { 'attributes' : '',
         'sessionType' : 'IRMA_unauthenticate',
-        'urlNextPage' : 'unauthentication_done',
+        'urlNextPage' : '/irma/test_succeeded_page/',
         'authorisationValue' : ''
         })
         response = self.client.get('/irma/perform_irma_session/')
@@ -114,4 +114,4 @@ class NormalFlowTestClass(TestCase):
         self.assertIn(
             ('activity_result', 'SUCCESS'), 
             response.client.session.items())
-        self.assertRedirects(response, '/unauthentication_done/')
+        self.assertRedirects(response, '/irma/test_succeeded_page/')

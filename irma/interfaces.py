@@ -218,6 +218,9 @@ class IrmaSessionManager:
                 user = authenticate(request, username=usernamestr)
                 if user is not None:
                     login(request, user)
+                    request.session['username'] = usernamestr
+                    request.session['firstname'] = user.first_name
+                    request.session['lastname'] = user.last_name
                     request.session['activity_result'] = "SUCCESS"
             else:
                 raise Exception('\'Settings\' object has no IRMA authentication backend reference')
@@ -280,6 +283,9 @@ class IrmaSessionManager:
             temp4 = request.session['activity_result'] 
         username = request.user.username
         logout(request)
+        request.session['username'] = ''
+        request.session['firstname'] = ''
+        request.session['lastname'] = ''
         user_object = User.objects.get(username = username)
         user_object.delete()
         if 'temp1' in locals():
@@ -302,6 +308,9 @@ class IrmaSessionManager:
         if 'activity_result' in request.session:
             temp4 = request.session['activity_result']    
         logout(request)
+        request.session['username'] = ''
+        request.session['firstname'] = ''
+        request.session['lastname'] = ''
         if 'temp1' in locals():
             request.session['displayed_attributes'] = temp1
         if 'temp2' in locals():

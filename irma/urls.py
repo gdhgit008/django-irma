@@ -20,4 +20,6 @@ urlpatterns = [
     path('start_irma_session/', IrmaApi.start_irma_session, name='start_irma_session'),
     path('get_irma_session_status/', IrmaApi.get_irma_session_status, name='get_irma_session_status'),
     path('perform_irma_session/', IrmaApi.perform_irma_session, name='perform_irma_session'),
+    path('test_succeeded_page/', IrmaApi.test_succeeded_page, name='test_succeeded_page'),
+    path('test_authorisation_page/', IrmaApi.test_authorisation_page, name='test_authorisation_page')
 ]

@@ -7,7 +7,7 @@ class AuthenticationTestClass(TestCase):
         response = self.client.get('/irma/start_irma_session/', 
         { 'attributes' : 'pbdf.sidn-pbdf.irma.pseudonym&pbdf.gemeente.personalData.initials&pbdf.gemeente.personalData.surname',
         'sessionType' : 'IRMA_encrypted_register',
-        'urlNextPage' : 'registration_done',
+        'urlNextPage' : '/irma/test_succeeded_page/',
         'authorisationValue' : '',
         'test_json_response' : "{\"sessionPtr\": {\"u\": \"https://www.someserver.com:8088/irma/session/WLo2AWzEyKiyVYeydk92\", \"irmaqr\": \"disclosing\"}, \"token\": \"lqcUyCLQVXLre5fXrdfj\", \"frontendRequest\": {\"authorization\": \"9BbXyq9SLQhCknB9WlBV\", \"minProtocolVersion\": \"1.0\", \"maxProtocolVersion\": \"1.1\"}}"
         })
@@ -20,7 +20,7 @@ class AuthenticationTestClass(TestCase):
         response = self.client.get('/irma/start_irma_session/', 
         { 'attributes' : 'pbdf.sidn-pbdf.irma.pseudonym',
         'sessionType' : 'IRMA_register',
-        'urlNextPage' : 'registration_done',
+        'urlNextPage' : '/irma/test_succeeded_page/',
         'authorisationValue' : '',
         'test_json_response' : "{\"sessionPtr\": {\"u\": \"https://www.someserver.com:8088/irma/session/1ofWzImXxNru7chdLzoS\", \"irmaqr\": \"disclosing\"}, \"token\": \"CGXgTgMamPKPnwwT8Ln7\", \"frontendRequest\": {\"authorization\": \"fDUH7ZdmY9OHaleopxFu\", \"minProtocolVersion\": \"1.0\", \"maxProtocolVersion\": \"1.1\"}}"
         })
@@ -41,7 +41,7 @@ class AuthenticationTestClass(TestCase):
         response = self.client.get('/irma/start_irma_session/', 
         { 'attributes' : 'pbdf.sidn-pbdf.irma.pseudonym',
         'sessionType' : 'IRMA_authenticate',
-        'urlNextPage' : 'authentication_done',
+        'urlNextPage' : '/irma/test_succeeded_page/',
         'authorisationValue' : '',
         'test_json_response' : "{\"sessionPtr\": {\"u\": \"https://www.someserver.com:8088/irma/session/ZH1FVAZ9WyO2UOjXQ7iP\", \"irmaqr\": \"disclosing\"}, \"token\": \"FPuA7Au5Zd9N4e1Mx5KB\", \"frontendRequest\": {\"authorization\": \"FyNCUfa40roIjB2Sq5bc\", \"minProtocolVersion\": \"1.0\", \"maxProtocolVersion\": \"1.1\"}}"
         })
@@ -52,8 +52,10 @@ class AuthenticationTestClass(TestCase):
         self.assertIn(
             ('activity_result', 'SUCCESS'), 
             response.client.session.items())
-
-        self.assertRedirects(response, '/authentication_done/')
+        self.assertIn(
+            ('username', 'B9GUh0A5I4s'), 
+            response.client.session.items())
+        self.assertRedirects(response, '/irma/test_succeeded_page/')
 
 
     # Test with encrypted authentication session with one attribute. 
@@ -64,7 +66,7 @@ class AuthenticationTestClass(TestCase):
         response = self.client.get('/irma/start_irma_session/', 
         { 'attributes' : 'pbdf.sidn-pbdf.irma.pseudonym',
         'sessionType' : 'IRMA_encrypted_authenticate',
-        'urlNextPage' : 'authentication_done',
+        'urlNextPage' : '/irma/test_succeeded_page/',
         'authorisationValue' : '',
         'test_json_response' : "{\"sessionPtr\": {\"u\": \"https://www.someserver.com:8088/irma/session/ZH1FVAZ9WyO2UOjXQ7iP\", \"irmaqr\": \"disclosing\"}, \"token\": \"FPuA7Au5Zd9N4e1Mx5KB\", \"frontendRequest\": {\"authorization\": \"FyNCUfa40roIjB2Sq5bc\", \"minProtocolVersion\": \"1.0\", \"maxProtocolVersion\": \"1.1\"}}"
         })
@@ -75,8 +77,10 @@ class AuthenticationTestClass(TestCase):
         self.assertIn(
             ('activity_result', 'SUCCESS'), 
             response.client.session.items())
-        
-        self.assertRedirects(response, '/authentication_done/')
+        self.assertNotIn(
+            ('username', 'B9GUh0A5I4s'), 
+            response.client.session.items())       
+        self.assertRedirects(response, '/irma/test_succeeded_page/')
 
     # Test with normal authentication session with one attribute. 
     # Unsuccessfull normal authentication
@@ -86,7 +90,7 @@ class AuthenticationTestClass(TestCase):
         response = self.client.get('/irma/start_irma_session/', 
         { 'attributes' : 'pbdf.sidn-pbdf.irma.pseudonym',
         'sessionType' : 'IRMA_authenticate',
-        'urlNextPage' : 'authentication_done',
+        'urlNextPage' : '/irma/test_succeeded_page/',
         'authorisationValue' : '',
         'test_json_response' : "{\"sessionPtr\": {\"u\": \"https://www.someserver.com:8088/irma/session/ZH1FVAZ9WyO2UOjXQ7iP\", \"irmaqr\": \"disclosing\"}, \"token\": \"FPuA7Au5Zd9N4e1Mx5KB\", \"frontendRequest\": {\"authorization\": \"FyNCUfa40roIjB2Sq5bc\", \"minProtocolVersion\": \"1.0\", \"maxProtocolVersion\": \"1.1\"}}"
         })
@@ -98,7 +102,7 @@ class AuthenticationTestClass(TestCase):
             ('activity_result', 'FAILURE'), 
             response.client.session.items())
 
-        self.assertRedirects(response, '/authentication_done/')
+        self.assertRedirects(response, '/irma/test_succeeded_page/')
 
 
     # Test with encrypted authentication session with one attribute. 
@@ -109,7 +113,7 @@ class AuthenticationTestClass(TestCase):
         response = self.client.get('/irma/start_irma_session/', 
         { 'attributes' : 'pbdf.sidn-pbdf.irma.pseudonym',
         'sessionType' : 'IRMA_encrypted_authenticate',
-        'urlNextPage' : 'authentication_done',
+        'urlNextPage' : '/irma/test_succeeded_page/',
         'authorisationValue' : '',
         'test_json_response' : "{\"sessionPtr\": {\"u\": \"https://www.someserver.com:8088/irma/session/ZH1FVAZ9WyO2UOjXQ7iP\", \"irmaqr\": \"disclosing\"}, \"token\": \"FPuA7Au5Zd9N4e1Mx5KB\", \"frontendRequest\": {\"authorization\": \"FyNCUfa40roIjB2Sq5bc\", \"minProtocolVersion\": \"1.0\", \"maxProtocolVersion\": \"1.1\"}}"
         })
@@ -121,4 +125,4 @@ class AuthenticationTestClass(TestCase):
             ('activity_result', 'FAILURE'), 
             response.client.session.items())
         
-        self.assertRedirects(response, '/authentication_done/')
+        self.assertRedirects(response, '/irma/test_succeeded_page/')

@@ -15,7 +15,7 @@ class YourTestClass(TestCase):
         response = self.client.get('/irma/start_irma_session/', 
         { 'attributes' : 'pbdf.gemeente.personalData.fullname',
         'sessionType' : 'IRMA_disclose',
-        'urlNextPage' : 'disclosure_start',
+        'urlNextPage' : '/irma/test_succeeded_page/',
         'authorisationValue' : ''
         })
         response_status = self.client.get('/irma/get_irma_session_status/')
@@ -27,7 +27,7 @@ class YourTestClass(TestCase):
         response_two_attributes = self.client.get('/irma/start_irma_session/', 
         { 'attributes' : 'pbdf.gemeente.personalData.fullname&pbdf.gemeente.address.street',
         'sessionType' : 'IRMA_disclose',
-        'urlNextPage' : 'disclosure_start',
+        'urlNextPage' : '/irma/test_succeeded_page/',
         'authorisationValue' : ''
         })
         response_status = self.client.get('/irma/get_irma_session_status/')
@@ -39,7 +39,7 @@ class YourTestClass(TestCase):
         response_multiple_attributes = self.client.get('/irma/start_irma_session/', 
         { 'attributes' : 'pbdf.gemeente.personalData.fullname&pbdf.gemeente.address.street&pbdf.gemeente.address.houseNumber&pbdf.gemeente.address.zipcode&pbdf.gemeente.address.city',
         'sessionType' : 'IRMA_disclose',
-        'urlNextPage' : 'disclosure_start',
+        'urlNextPage' : '/irma/test_succeeded_page/',
         'authorisationValue' : 'Yes'
         })
         response_status = self.client.get('/irma/get_irma_session_status/')

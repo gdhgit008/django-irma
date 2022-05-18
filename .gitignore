@@ -1,0 +1,10 @@
+*.db
+dist
+docs
+Pipfile
+*.pyc
+*.pyo
+__pycache__/
+*.egg-info/
+
+!.gitignore

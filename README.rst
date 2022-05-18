@@ -4,7 +4,8 @@ IRMA
 
 IRMA I Reveal My Attributes is a Django app to for IRMA functionality. The app provides
 IRMA user authentication, authorisation and attribute disclosure. Please visit https://irma.app 
-for more information about IRMA (I Reveal My Attributes). 
+for more information about IRMA (I Reveal My Attributes). More information about Django can be 
+found on https://docs.djangoproject.com/en/4.0/.
 
 Below you find detailed documentation about the different functionalities.
 
@@ -64,3 +65,21 @@ how to implement each func- tionality. If you are interested in one specific fun
 go directly to the respective section without the need of reading the other functionalities. In all 
 cases, you need to have setup an IRMA server. See the IRMA documenta- tion how to setup an IRMA 
 server. In section 3 the recommended IRMA server configuration for this Django package.
+
+IRMA user authentication
+------------------------
+test tekst
+
+
+IRMA authorisation
+------------------
+
+IRMA attribute disclosure
+-------------------------
+
+
+IRMA server configuration
+-------------------------
+
+Undo activities
+---------------

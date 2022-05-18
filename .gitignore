@@ -2,6 +2,7 @@
 dist
 docs
 Pipfile
+.DS_Store
 *.pyc
 *.pyo
 __pycache__/

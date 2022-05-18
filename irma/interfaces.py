@@ -73,7 +73,7 @@ class IrmaSessionManager:
     def get_qrcontent_for_modal(request):
         qrcontent = 'IRMA session error'
         if IrmaSessionManager.session_type_without_qr(request):
-            qrcontent = "skip"
+             qrcontent = "skip"
         else:
             if IrmaSessionManager.session_type_valid(request):
                 attributes=request.GET.get('attributes')
@@ -86,12 +86,12 @@ class IrmaSessionManager:
                     # This string is transformed into QRcode in Modal.html
                     qrcontent = "{\"u\":\""+uri+"\",\"irmaqr\":\"disclosing\"}"
                 else:
-                    if IrmaSessionManager.session_request_failed_IRMA_server_unreachable(response):
-                        qrcontent = "IRMA_server_unreachable"
+                    if not IrmaSessionManager.session_request_failed_IRMA_server_unreachable(response):
+                        qrcontent = 'Syntax_error'
                     else:
-                        raise Exception('Request to the IRMA server was invalid, please check the start_irma_session arguments for any syntax errors')
+                        qrcontent = "IRMA_server_unreachable"
             else:
-                 raise Exception('Not a valid IRMA Django activity')
+                 qrcontent = 'Syntax_error'
         return qrcontent
 
     def session_type_without_qr(request):

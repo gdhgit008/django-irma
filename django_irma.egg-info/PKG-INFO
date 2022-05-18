@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: django-irma
-Version: 0.12
+Version: 0.13
 Summary: A Django app for IRMA functionalities.
 Home-page: https://www.irmadjangoapi.nl/
 Author: guidodehooge@live.nl
@@ -55,8 +55,8 @@ Quick start
         'django_user_agents.middleware.UserAgentMiddleware', 
     ]
 
-4.  Add "irma.irma_auth_backend.IrmaAuthenticationBackend" to your AUTHENTICATION_BACKENDS setting::
-    
+4.  Add "irma.irma_auth_backend.IrmaAuthenticationBackend" to your AUTHENTICATION_BACKENDS in setting.py::
+
     AUTHENTICATION_BACKENDS = [
         ...
         'irma.irma_auth_backend.IrmaAuthenticationBackend',
@@ -68,7 +68,7 @@ Quick start
     IRMA_SERVER_PORT = '8088'
     IRMA_SRVER_AUTHENTICATION_TOKEN = os.environ.get('IRMA_SERVER_TOKEN')
 
-It is recommended to store the IRMA server token in your environment.
+    Note: it is recommended to store the IRMA server token in your environment.
 
 6. Include the irma URLconf in your project urls.py::
 
@@ -93,7 +93,7 @@ server. In section 3 the recommended IRMA server configuration for this Django p
 
 IRMA user authentication
 ------------------------
-
+test tekst
 
 
 IRMA authorisation

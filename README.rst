@@ -30,7 +30,7 @@ Quick start
         'django_user_agents.middleware.UserAgentMiddleware', 
     ]
 
-4.  Add "irma.irma_auth_backend.IrmaAuthenticationBackend" to your AUTHENTICATION_BACKENDS setting::
+4.  Add "irma.irma_auth_backend.IrmaAuthenticationBackend" to your AUTHENTICATION_BACKENDS in setting.py::
 
     AUTHENTICATION_BACKENDS = [
         ...
@@ -43,7 +43,7 @@ Quick start
     IRMA_SERVER_PORT = '8088'
     IRMA_SRVER_AUTHENTICATION_TOKEN = os.environ.get('IRMA_SERVER_TOKEN')
 
-It is recommended to store the IRMA server token in your environment.
+    Note: it is recommended to store the IRMA server token in your environment.
 
 6. Include the irma URLconf in your project urls.py::
 

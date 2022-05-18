@@ -38,11 +38,7 @@ class IrmaApi:
 
     # ------------ API helpers
     def _get_initial_modal_json_response(request):
-        try:
-           qrcontent = IrmaSessionManager.get_qrcontent_for_modal(request)
-        except Exception as e:
-            print('Syntax error ' + 'Exception ' + str(e)) 
-            qrcontent = 'Syntax_error'
+        qrcontent = IrmaSessionManager.get_qrcontent_for_modal(request)
         device_type = IrmaApi._get_device_type(request)
         if settings.DEBUG:
             print('Device type: '+device_type)
@@ -51,7 +47,7 @@ class IrmaApi:
             'qrcontent' : qrcontent,
             'device_type' : device_type
         }
-        return JsonResponse(modal_json_response)
+        return JsonResponse(modal_json_response) 
 
     def _get_irma_session_status_json_response(request):
         response = IrmaSessionManager.get_irma_session_status(request)

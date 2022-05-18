@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: django-irma
-Version: 0.10
+Version: 0.11
 Summary: A Django app for IRMA functionalities.
 Home-page: https://www.irmadjangoapi.nl/
 Author: guidodehooge@live.nl

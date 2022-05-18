@@ -31,7 +31,7 @@ Quick start
     ]
 
 4.  Add "irma.irma_auth_backend.IrmaAuthenticationBackend" to your AUTHENTICATION_BACKENDS setting::
-    
+
     AUTHENTICATION_BACKENDS = [
         ...
         'irma.irma_auth_backend.IrmaAuthenticationBackend',

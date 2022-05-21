@@ -401,6 +401,7 @@ To clear all disclosed attribute value add the following button
 ---------
 More info
 ---------
+A demo website is available on https://www.irmadjangoapi.nl.
 The source code of this project can be found on GitHub: https://github.com/gdhgit008/django-irma.
 More technical information about IRMA: https://irma.app/ docs/what-is-irma/.
 More information about Django: //docs.djangoproject.com/en/4.0/.

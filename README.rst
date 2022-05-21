@@ -105,12 +105,12 @@ Set onclick to the start_irma_session() function. This function takes three stri
 For a list of attribute identifiers, go to https://privacybydesign.foundation/attribute-index/en/. 
 Below you find a code example of a button:
 
-    .. code-block:: html
+.. code-block:: html
 
-        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#IRMAmodal" 
-        onclick="start_irma_session('IRMA_register','registration_done', 'pbdf.sidn-pbdf.irma.pseudonym')">
-            Register with IRMA
-        </button>
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#IRMAmodal" 
+    onclick="start_irma_session('IRMA_register','registration_done', 'pbdf.sidn-pbdf.irma.pseudonym')">
+        Register with IRMA
+    </button>
 
 You can provide a second and third attribute identifier. The identifiers should be separated with an ampersand symbol. 
 When you provide more than one attribute identifier, the first attribute will be used as the username for the IRMA user. 
@@ -130,15 +130,15 @@ that can be equal to 'SUCCESS' or 'FAILURE'. This attribute tells you if the IRM
 to determine what you want to show to the user. Suppose you provided a second and third argument, the request.session dictionary keys 'firstname' 
 and 'lastname' are also present with IRMA attribute values. Below you find an example of a view after an IRMA registration session:
 
-    .. code-block:: python3
+.. code-block:: python3
 
-        def registration_done(request):
-            result = json.loads(request.session['session_result']) 
-            parameter1 = request.session['username']
-            parameter2 = request.session['firstname']+' '+request.session['lastname']
-            if result ['activity_result'] == 'SUCCESS':
-                return render(request, 'blog/registration_success.html', {'parameter1' : parameter1 , 'parameter2' : parameter2})
-            return render(request, 'blog/registration_failure.html', {'parameter1' : parameter1 , 'parameter2' : parameter2})
+    def registration_done(request):
+        result = json.loads(request.session['session_result']) 
+        parameter1 = request.session['username']
+        parameter2 = request.session['firstname']+' '+request.session['lastname']
+        if result ['activity_result'] == 'SUCCESS':
+            return render(request, 'blog/registration_success.html', {'parameter1' : parameter1 , 'parameter2' : parameter2})
+        return render(request, 'blog/registration_failure.html', {'parameter1' : parameter1 , 'parameter2' : parameter2})
 
 IRMA login
 ..........
@@ -152,29 +152,29 @@ Set onclick to start_irma_session() function. This function takes three string a
 
 Below you find a code example of a button:
 
-    .. code-block:: html
+.. code-block:: html
 
-        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#IRMAmodal" 
-        onclick="start_irma_session('IRMA_authenticate','authentication_done', 'pbdf.sidn-pbdf.irma.pseudonym')">
-            IRMA Login
-        </button>
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#IRMAmodal" 
+    onclick="start_irma_session('IRMA_authenticate','authentication_done', 'pbdf.sidn-pbdf.irma.pseudonym')">
+        IRMA Login
+    </button>
 
 A second and third attribute can be requested in the same format as in the registration 
 section. The view you redirect to has stored the result of the session in 
 request.session['session_result']. The session result contains a dictionary with the 
 'activity_result' to indicate if the authentication was successful ('SUCCESS') or 
 not ('FAILURE'). Below you find an example of a view which is redirected to after 
-an IRMA authentication session
+an IRMA authentication session:
 
-    .. code-block:: python3
+.. code-block:: python3
 
-        def authentication_done(request):
-            result = json.loads(request.session['session_result']) 
-            if result['activity_result'] == 'SUCCESS':
-                parameter1 = request.user.username
-                parameter2 = request.user.first_name+' '+request.user.last_name
-                return render(request, 'blog/authentication_success.html', {'parameter1' : parameter1 ,'parameter2' : parameter2})
-            return render(request, 'blog/authentication_failure.html', {})
+    def authentication_done(request):
+        result = json.loads(request.session['session_result']) 
+        if result['activity_result'] == 'SUCCESS':
+            parameter1 = request.user.username
+            parameter2 = request.user.first_name+' '+request.user.last_name
+            return render(request, 'blog/authentication_success.html', {'parameter1' : parameter1 ,'parameter2' : parameter2})
+        return render(request, 'blog/authentication_failure.html', {})
 
 If the IRMA authentication session was successful, the IRMA user is now associated 
 with its corresponding User object in the Django user database.
@@ -205,15 +205,15 @@ Set onclick to start_irma_session() function. This function takes four string ar
 If more than one attribute is requested, attribute identifiers must be concatenated 
 with an ampersand (&). When multiple attributes are requested, multiple attribute 
 values must be given in the same order as the attributes are requested.
-Below you find a code example
+Below you find a code example:
 
-    .. code-block:: html
+.. code-block:: html
 
-        <button type="button" class=" btn btn−primary" data−toggle="modal" data−target="#IRMAmodal" 
-        onclick="start_irma_session('IRMA_authorise', 'universitystudent',
-        'irma−demo.RU.studentCard.university&irma−demo.RU.studentCard.level', 'Open Universiteit&Bachelor')">
-            Authorise with IRMA
-        </button>
+    <button type="button" class=" btn btn−primary" data−toggle="modal" data−target="#IRMAmodal" 
+    onclick="start_irma_session('IRMA_authorise', 'universitystudent',
+    'irma−demo.RU.studentCard.university&irma−demo.RU.studentCard.level', 'Open Universiteit&Bachelor')">
+        Authorise with IRMA
+    </button>
 
 In this example, students will pass the IRMA authorisation when their irma−demo.RU.studentCard.university
 attribute value equals 'Open University' and their attribute irma−demo.RU.studentCard.level equals
@@ -227,9 +227,9 @@ works with the @irma_authorisation_required decorator. The decorator takes three
 
 Below you find an example:
 
-    .. code-block:: python3
+.. code-block:: python3
 
-        @irma_authorisation_required('irma-demo.RU.studentCard.university',settings.UNIVERSITY_CHECK_REQUIRED,settings.UNIVERSITY_CHECK_PASSED)
+    @irma_authorisation_required('irma-demo.RU.studentCard.university',settings.UNIVERSITY_CHECK_REQUIRED,settings.UNIVERSITY_CHECK_PASSED)
 
 The decorator should be placed above a function-based view in views.py for
 which you want to use IRMA authorisation. In this example, only students
@@ -265,12 +265,12 @@ Set onclick to start_irma_session() function. This function takes three argument
 
 Below you find an example of a button that requests for an IRMA user's mobile number:
 
-    .. code-block:: html
+.. code-block:: html
 
     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#IRMAmodal" 
-	 onclick="start_irma_session('IRMA_disclose','disclosure_start', 'pbdf.sidn-pbdf.mobilenumber.mobilenumber')">
-		Complete form with IRMA
-	</button>
+    onclick="start_irma_session('IRMA_disclose','disclosure_start', 'pbdf.sidn-pbdf.mobilenumber.mobilenumber')">
+        Complete form with IRMA
+    </button>
 
 The view to which IRMA redirects the user after a disclosure session stores the requested 
 attributes with the attribute values in request.session['disclose_attributes']. The 
@@ -279,7 +279,7 @@ value contains all requested attributes identifiers as a key and attributes valu
 a value of the dictionary. Below we give you an example of how a view could handle 
 the disclosed attributes:
 
-    .. code-block:: python3
+.. code-block:: python3
 
     def disclosure_start(request):
         street = ''
@@ -299,7 +299,7 @@ IRMA server configuration
 -------------------------
 This Django package is only tested on one specific IRMA server configuration. With 
 different IRMA server configurations, you might experience unexpected behaviour in 
-Django. The IRMA server configuration used for this Django package 
+Django. The IRMA server configuration used for this Django package: 
 
 .. code-block:: json
 
@@ -371,7 +371,7 @@ button (should only be visible for authenticated IRMA users):
         Remove my user profile
     </button>
 
-To log out an IRMA user add the following button (should only be visible for authenticated IRMA users)
+To log out an IRMA user add the following button (should only be visible for authenticated IRMA users):
 
 .. code-block:: html
 
@@ -380,7 +380,7 @@ To log out an IRMA user add the following button (should only be visible for aut
         Log out with IRMA
     </button>
 
-To clear all IRMA authorisation add the following button
+To clear all IRMA authorisation add the following button:
 
 .. code-block:: html
 
@@ -389,7 +389,7 @@ To clear all IRMA authorisation add the following button
         Clear authorisation with IRMA
     </button>
 
-To clear all disclosed attribute value add the following button
+To clear all disclosed attribute value add the following button:
 
 .. code-block:: html
 

@@ -15,65 +15,65 @@ Quick start
 
 #. Install using pip the django-irma package:
 
-    .. code-block:: bash
-        
-        pip install django-irma
+.. code-block:: bash
+    
+    pip install django-irma
 
 #. Add "irma.apps.IrmaConfig" to your INSTALLED_APPS setting:
 
-    .. code-block:: python3
+.. code-block:: python3
 
-        INSTALLED_APPS = [
-            ...
-            'irma.apps.IrmaConfig',
-        ]
+    INSTALLED_APPS = [
+        ...
+        'irma.apps.IrmaConfig',
+    ]
 
 #. Add "django_user_agents.middleware.UserAgentMiddleware" to your MIDDLEWARE in settings.py:
 
-    .. code-block:: python3
+.. code-block:: python3
 
-        MIDDLEWARE = [
-            ...
-            'django_user_agents.middleware.UserAgentMiddleware', 
-        ]
+    MIDDLEWARE = [
+        ...
+        'django_user_agents.middleware.UserAgentMiddleware', 
+    ]
 
 #. Add "irma.irma_auth_backend.IrmaAuthenticationBackend" to your AUTHENTICATION_BACKENDS in setting.py:
 
-    .. code-block:: python3
+.. code-block:: python3
 
-        AUTHENTICATION_BACKENDS = [
-            ...
-            'irma.irma_auth_backend.IrmaAuthenticationBackend',
-        ]
+    AUTHENTICATION_BACKENDS = [
+        ...
+        'irma.irma_auth_backend.IrmaAuthenticationBackend',
+    ]
 
 #. Add the following three IRMA variables to settings.py:
 
-    .. code-block:: python3
+.. code-block:: python3
 
-        IRMA_SERVER_URL = 'https://www.exampleirmaserverurl.com'
-        IRMA_SERVER_PORT = '8088'
-        IRMA_SRVER_AUTHENTICATION_TOKEN = os.environ.get('IRMA_SERVER_TOKEN')
+    IRMA_SERVER_URL = 'https://www.exampleirmaserverurl.com'
+    IRMA_SERVER_PORT = '8088'
+    IRMA_SRVER_AUTHENTICATION_TOKEN = os.environ.get('IRMA_SERVER_TOKEN')
 
    Note: fill in your own IRMA server URL and port. It is recommended to store 
    the IRMA server token in your environment.
 
 #. Include the irma URLconf in your project urls.py:
 
-    .. code-block:: python3
+.. code-block:: python3
 
-        path('irma/', include('irma.urls')),
+    path('irma/', include('irma.urls')),
 
 #. Add the following line to your base.html to allow the IRMA modal in your project:
 
-    .. code-block:: django
+.. code-block:: django
 
-        {% include "irma/modal.html" %}
+    {% include "irma/modal.html" %}
 
 #. Run the following command to test if the package is installed correctly:
 
-    .. code-block:: bash
+.. code-block:: bash
 
-        python3 manage.py test irma
+    python3 manage.py test irma
 
 The django-irma package offers three functionalities (IRMA user authentication, IRMA authorisation 
 and attribute disclosure), which can be implemented independently. The following sections describe 

@@ -54,8 +54,8 @@ Add the following three IRMA variables to settings.py:
     IRMA_SERVER_PORT = '8088'
     IRMA_SRVER_AUTHENTICATION_TOKEN = os.environ.get('IRMA_SERVER_TOKEN')
 
-   Note: fill in your own IRMA server URL and port. It is recommended to store 
-   the IRMA server token in your environment.
+*Note*: fill in your own IRMA server URL and port. It is recommended to store 
+the IRMA server token in your environment.
 
 Include the irma URLconf in your project urls.py:
 
@@ -403,5 +403,5 @@ More info
 ---------
 A demo website is available on https://www.irmadjangoapi.nl.
 The source code of this project can be found on GitHub: https://github.com/gdhgit008/django-irma.
-More technical information about IRMA: https://irma.app/ docs/what-is-irma/.
-More information about Django: //docs.djangoproject.com/en/4.0/.
+More technical information about IRMA: https://irma.app/docs/what-is-irma/.
+More information about Django: https://docs.djangoproject.com/en/4.0/.

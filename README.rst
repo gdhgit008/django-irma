@@ -2,15 +2,6 @@
 IRMA
 ====
 
-.. .. image:: https://img.shields.io/pypi/v/django-irma.svg?branch=main
-..     :target: https://pypi.python.org/pypi/django-irma
-
-.. .. image:: https://img.shields.io/pypi/pyversions/django-irma.svg?branch=main
-..     :target: https://pypi.org/project/django-irma
-
-.. .. image:: https://img.shields.io/pypi/l/django-irma.svg?branch=main
-..     :target: https://pypi.org/project/django-irma
-
 IRMA (I Reveal My Attributes) is an attribute-based identity management system. This package provides
 IRMA user authentication, authorisation and attribute disclosure for Django. Please visit https://irma.app 
 for more information about IRMA. Below you will find a quick start and detailed documentation about the different IRMA functionalities.

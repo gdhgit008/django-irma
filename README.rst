@@ -114,7 +114,7 @@ Below you find a code example of a button:
 .. code-block:: html
 
     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#IRMAmodal" 
-    onclick="start_irma_session('IRMA_register','registration_done', 'pbdf.sidn-pbdf.irma.pseudonym')">
+     onclick="start_irma_session('IRMA_register','registration_done', 'pbdf.sidn-pbdf.irma.pseudonym')">
         Register with IRMA
     </button>
 
@@ -161,7 +161,7 @@ Below you find a code example of a button:
 .. code-block:: html
 
     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#IRMAmodal" 
-    onclick="start_irma_session('IRMA_authenticate','authentication_done', 'pbdf.sidn-pbdf.irma.pseudonym')">
+     onclick="start_irma_session('IRMA_authenticate','authentication_done', 'pbdf.sidn-pbdf.irma.pseudonym')">
         IRMA Login
     </button>
 
@@ -216,8 +216,8 @@ Below you find a code example:
 .. code-block:: html
 
     <button type="button" class=" btn btn−primary" data−toggle="modal" data−target="#IRMAmodal" 
-    onclick="start_irma_session('IRMA_authorise', 'universitystudent',
-    'irma−demo.RU.studentCard.university&irma−demo.RU.studentCard.level', 'Open Universiteit&Bachelor')">
+     onclick="start_irma_session('IRMA_authorise', 'universitystudent',
+     'irma−demo.RU.studentCard.university&irma−demo.RU.studentCard.level', 'Open Universiteit&Bachelor')">
         Authorise with IRMA
     </button>
 
@@ -274,7 +274,7 @@ Below you find an example of a button that requests for an IRMA user's mobile nu
 .. code-block:: html
 
     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#IRMAmodal" 
-    onclick="start_irma_session('IRMA_disclose','disclosure_start', 'pbdf.sidn-pbdf.mobilenumber.mobilenumber')">
+     onclick="start_irma_session('IRMA_disclose','disclosure_start', 'pbdf.sidn-pbdf.mobilenumber.mobilenumber')">
         Complete form with IRMA
     </button>
 
@@ -407,7 +407,5 @@ To clear all disclosed attribute value add the following button:
 ---------
 More info
 ---------
-A demo website is available on https://www.irmadjangoapi.nl.
-The source code of this project can be found on GitHub: https://github.com/gdhgit008/django-irma.
-More technical information about IRMA: https://irma.app/docs/what-is-irma/.
-More information about Django: https://docs.djangoproject.com/en/4.0/.
+IRMA technical documentation is avaialable on https://irma.app/docs/what-is-irma/.
+A demo website is available on https://www.irmadjangoapi.nl. 

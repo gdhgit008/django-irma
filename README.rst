@@ -1,3 +1,5 @@
+.. warning:: **This repository contains alpha software. This software shall not be used in production because it contains vulnerabilities.**
+
 ====
 IRMA
 ====
@@ -403,8 +405,10 @@ To clear all disclosed attribute value add the following button:
         Clear personal data with IRMA
     </button>
 
----------
-More info
----------
+----------------
+More information
+----------------
 IRMA technical documentation is avaialable on https://irma.app/docs/what-is-irma/.
 A demo website is available on https://www.irmadjangoapi.nl. 
+
+.. warning:: **This repository contains alpha software. This software shall not be used in production because it contains vulnerabilities.**

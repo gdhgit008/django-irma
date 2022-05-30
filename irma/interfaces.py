@@ -208,49 +208,56 @@ class IrmaSessionManager:
         irma_server_port = settings.IRMA_SERVER_PORT
         return irma_server_url+':'+irma_server_port+'/irma/session/'
 
-    def authenticate_irma_user(request, response, session_type):
+    def authenticate_irma_user(request, response, session_type, attributes):
         try:
-            usernamestr = response[0]['disclosed'][0][0]['rawvalue']
-            if session_type == 'IRMA_encrypted_authenticate':
-                usernamestr = IrmaSessionManager.create_pseudonym_username_string(usernamestr)
-            user = authenticate(request, username=usernamestr)
-            if 'irma.irma_auth_backend.IrmaAuthenticationBackend' in settings.AUTHENTICATION_BACKENDS:
+            if IrmaSessionManager.check_all_attributes_present(request, response, attributes):
+                attribute_list = attributes.split('&')
+                usernamestr = IrmaSessionManager.get_attribute_response_value(request, response, attribute_list[0])
+                if session_type == 'IRMA_encrypted_authenticate':
+                    usernamestr = IrmaSessionManager.create_pseudonym_username_string(usernamestr)
                 user = authenticate(request, username=usernamestr)
-                if user is not None:
-                    login(request, user)
-                    request.session['username'] = usernamestr
-                    request.session['firstname'] = user.first_name
-                    request.session['lastname'] = user.last_name
-                    request.session['activity_result'] = "SUCCESS"
+                if 'irma.irma_auth_backend.IrmaAuthenticationBackend' in settings.AUTHENTICATION_BACKENDS:
+                    user = authenticate(request, username=usernamestr)
+                    if user is not None:
+                        login(request, user)
+                        request.session['username'] = usernamestr
+                        request.session['firstname'] = user.first_name
+                        request.session['lastname'] = user.last_name
+                        request.session['activity_result'] = "SUCCESS"
+                else:
+                    raise Exception('\'Settings\' object has no IRMA authentication backend reference')
             else:
-                raise Exception('\'Settings\' object has no IRMA authentication backend reference')
-
+                request.session['activity_result'] = "FAILURE"
         #Authentication failure
         except Exception as e:
             print('IRMA_authenticate session failed. ' + 'Exception ' + str(e))
 
-    def register_irma_user(request, response, session_type):
+    def register_irma_user(request, response, session_type, attributes):
         try:
-            first_name = ''
-            last_name = ''
-            usernamestr = response[0]['disclosed'][0][0]['rawvalue']
-            element_count = len(response[0]['disclosed'][0])
-            if element_count > 1:
-                first_name = response[0]['disclosed'][0][1]['rawvalue']
-            if element_count > 2:
-                last_name = response[0]['disclosed'][0][2]['rawvalue']
-            if session_type == 'IRMA_encrypted_register':
-                usernamestr = IrmaSessionManager.create_pseudonym_username_string(usernamestr)
-            request.session['username'] = usernamestr
-            request.session['firstname'] = first_name
-            request.session['lastname'] = last_name
-            user = User.objects.create_user(username = usernamestr, password = '')
-            if user is not None:
-                user.set_unusable_password()
-                user.first_name = first_name
-                user.last_name = last_name
-                user.save()
-                request.session['activity_result'] = "SUCCESS"
+            if IrmaSessionManager.check_all_attributes_present(request, response, attributes):
+                attribute_list = attributes.split('&')
+                first_name = ''
+                last_name = ''
+                usernamestr = IrmaSessionManager.get_attribute_response_value(request, response, attribute_list[0])
+                element_count = len(response[0]['disclosed'][0])
+                if element_count > 1:
+                    first_name = IrmaSessionManager.get_attribute_response_value(request, response, attribute_list[1])
+                if element_count > 2:
+                    last_name = IrmaSessionManager.get_attribute_response_value(request, response, attribute_list[2])
+                if session_type == 'IRMA_encrypted_register':
+                    usernamestr = IrmaSessionManager.create_pseudonym_username_string(usernamestr)
+                request.session['username'] = usernamestr
+                request.session['firstname'] = first_name
+                request.session['lastname'] = last_name
+                user = User.objects.create_user(username = usernamestr, password = '')
+                if user is not None:
+                    user.set_unusable_password()
+                    user.first_name = first_name
+                    user.last_name = last_name
+                    user.save()
+                    request.session['activity_result'] = "SUCCESS"
+            else:
+                request.session['activity_result'] = "FAILURE"
         #register failure
         except Exception as e:
             print('IRMA_register session failed. ' + 'Exception ' + str(e))
@@ -258,6 +265,8 @@ class IrmaSessionManager:
     def authorise_irma_user(request, response, authorise_value, attributes):
         attributes_value = response[0]['disclosed'][0][0]['rawvalue']
         # iteration if more attribute values are disclosed, must have the format result1&result2&...
+        all_present = IrmaSessionManager.check_all_attributes_present(request, response, attributes)
+        print (all_present)
         if len(response[0]['disclosed'][0]) > 1:
             for index in range(1, len(response[0]['disclosed'][0])):
                 attributes_value = attributes_value+'&'+response[0]['disclosed'][0][index]['rawvalue']
@@ -265,12 +274,12 @@ class IrmaSessionManager:
             IrmaDjangoSessionManager.store_successful_authorisation_in_session(request, attributes)
         else:
             IrmaDjangoSessionManager.store_unsuccessful_authorisation_in_session(request)
-            
-    def disclose_irma_attributes(request):
-        try:
+
+    def disclose_irma_attributes(request, response, attributes):
+        if IrmaSessionManager.check_all_attributes_present(request, response, attributes):
             request.session['activity_result'] = "SUCCESS"
-        except Exception as e:
-            print('disclose session failed. ' + 'Exception ' + str(e))
+        else:
+            request.session['activity_result'] = "FAILURE"
 
     def unregister_irma_user(request):
         if 'displayed_attributes' in request.session:
@@ -372,3 +381,26 @@ class IrmaSessionManager:
             if IrmaSessionManager.session_request_succeeded(response):
                 status = response[0]['proofStatus']
         return status
+
+    def check_all_attributes_present(request, response, attributes):
+        total_outcome = True
+        outcome = False
+        attribute_list = attributes.split('&')
+        for attribute in attribute_list:
+            index = 0
+            while index < len(response[0]['disclosed'][0]):
+                if response[0]['disclosed'][0][index]['id'] == attribute:
+                    if response[0]['disclosed'][0][index]['status'] == 'PRESENT':
+                        outcome = True
+                index = index + 1 
+            total_outcome = total_outcome and outcome
+        return total_outcome
+
+    def get_attribute_response_value(request, response, attribute):
+        index = 0
+        while index < len(response[0]['disclosed'][0]):
+            if response[0]['disclosed'][0][index]['id'] == attribute:
+                if response[0]['disclosed'][0][index]['status'] == 'PRESENT':
+                    value = response[0]['disclosed'][0][index]['rawvalue']
+            index = index + 1 
+        return value

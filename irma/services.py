@@ -32,7 +32,7 @@ class IrmaDjangoSessionManager:
         if disclosed_attributes_in_session:
             for attribute in response[0]['disclosed'][0]:
                 session_result_string = session_result_string + ',"' +attribute['id']+'": "' +attribute['rawvalue']+'"'
-        session_result_json = (session_result_string + '}').replace('\'', '\"')
+        session_result_json = session_result_string + '}'
         if settings.DEBUG:
             print("Session result: " + session_result_json)
         request.session['session_result'] = session_result_json
